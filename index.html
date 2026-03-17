@@ -116,7 +116,8 @@ html,body{height:100%;font-family:'Cairo',sans-serif;background:var(--cream);col
   .ng label{font-size:0.67rem;font-weight:700;color:var(--mid);text-align:center;}
   .ng input{padding:9px 5px;border:1.5px solid #ead8e4;border-radius:9px;font-family:'Cairo',sans-serif;font-size:0.9rem;color:var(--dark);background:#fff;text-align:center;outline:none;width:100%;-webkit-appearance:none;}
   .ng input:focus{border-color:var(--rose);}
-  .pi-buyer-row{display:flex;align-items:center;gap:7px;margin-bottom:9px;padding:6px 10px;background:var(--white);border-radius:9px;border:1px solid #f0e0e8;}
+  .pi-buyer-row{display:flex;align-items:center;gap:6px;margin-bottom:9px;padding:6px 10px;background:var(--white);border-radius:9px;border:1px solid #f0e0e8;overflow:hidden;}
+  .pi-buyer-row .pi-buyer-input{min-width:0;flex:1;}
   .pi-buyer-row svg{flex-shrink:0;color:var(--muted);}
   .pi-buyer-input{flex:1;border:none;outline:none;font-family:'Cairo',sans-serif;font-size:0.85rem;color:var(--dark);background:transparent;}
   .pi-buyer-input::placeholder{color:var(--muted);}
@@ -443,7 +444,7 @@ html,body{height:100%;font-family:'Cairo',sans-serif;background:var(--cream);col
             </div>
             <div class="card">
               <div class="card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> المنتجات</div>
-              <table class="products-table"><thead><tr><th style="width:30px">#</th><th>اسم المنتج</th><th>اسم المشتري</th><th>رقم الموبايل</th><th style="width:75px">الكمية</th><th style="width:105px">التكلفة</th><th style="width:105px">سعر البيع</th><th style="width:105px">الربح</th><th style="width:34px"></th></tr></thead><tbody id="d-items"></tbody></table>
+              <table class="products-table"><thead><tr><th style="width:30px">#</th><th style="min-width:160px">اسم المنتج</th><th style="min-width:130px">اسم المشتري</th><th style="min-width:120px">رقم الموبايل</th><th style="width:58px">الكمية</th><th style="width:82px">التكلفة</th><th style="width:82px">سعر البيع</th><th style="width:82px">الربح</th><th style="width:34px"></th></tr></thead><tbody id="d-items"></tbody></table>
               <button class="btn-add-row" onclick="addItem('d')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة منتج</button>
               <div class="shipping-box">
                 <div class="shipping-toggle" onclick="toggleShip('d')"><span class="shipping-toggle-label"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> مصاريف الشحن</span><div class="toggle-switch" id="d-ship-toggle"></div></div>
@@ -673,7 +674,7 @@ function toggleShip(v){
   shipOn[v]=!shipOn[v];
   document.getElementById(v+'-ship-toggle').classList.toggle('on',shipOn[v]);
   document.getElementById(v+'-ship-fields').style.display=shipOn[v]?'block':'none';
-  if(!shipOn[v]) document.getElementById(v+'-ship-cost').value='';
+  if(!shipOn[v]) document.getElementById(v+'-ship-cost').value='130';
   calcSummary(v);
 }
 
@@ -843,7 +844,7 @@ function viewOrder(id,v){
   document.getElementById(v+'-sheet-title').textContent=o.name;
   const rows=o.items.map(i=>{
     const p=(i.price-i.cost)*i.qty;
-    return `<div class="detail-row"><div class="dr-name">${i.name}${i.buyer?`<span style="font-size:0.72rem;color:var(--muted);font-weight:400;margin-right:6px;">· ${i.buyer}</span>`:''}${i.phone?`<span style="font-size:0.72rem;color:var(--muted);font-weight:400;margin-right:4px;direction:ltr;display:inline-block;">📞 ${i.phone}</span>`:''}</div><div class="dr-nums">×${i.qty} | ${i.cost.toFixed(2)}→${i.price.toFixed(2)}</div><div class="dr-profit" style="color:${p>=0?'var(--green)':'var(--red)'}">${p>=0?'+':''}${p.toFixed(2)} ج</div></div>`;
+    return `<div class="detail-row"><div class="dr-name">${i.name}${i.buyer?`<span style="font-size:0.72rem;color:var(--muted);font-weight:400;margin-right:6px;">· ${i.buyer}</span>`:''  }${i.phone?`<span style="font-size:0.72rem;color:var(--muted);font-weight:400;margin-right:4px;direction:ltr;display:inline-block;">📞 ${i.phone}</span>`:''}</div><div class="dr-nums">×${i.qty} | ${i.cost.toFixed(2)}→${i.price.toFixed(2)}</div><div class="dr-profit" style="color:${p>=0?'var(--green)':'var(--red)'}">${p>=0?'+':''}${p.toFixed(2)} ج</div></div>`;
   }).join('');
   document.getElementById(v+'-sheet-body').innerHTML=`
     <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;text-align:center;">${fmtDate(o.date)}${o.notes?' · '+o.notes:''}</div>
