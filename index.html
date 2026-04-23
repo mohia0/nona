@@ -16600,7 +16600,8 @@
     function exportJSON() {
       if (!orders.length) return showToast('لا يوجد بيانات للتصدير');
       const data = JSON.stringify({ exportDate: new Date().toISOString(), totalOrders: orders.length, orders }, null, 2);
-      const blob = new Blob([data], { type: 'application/json;charset=utf-8' });
+      // Adding \uFEFF (BOM) ensures Windows natively recognizes the file as UTF-8 encoding for Arabic characters
+      const blob = new Blob(['\uFEFF' + data], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = 'mama-nona-' + today() + '.json'; a.click();
       URL.revokeObjectURL(url); showToast('تم تصدير البيانات!');
@@ -16632,7 +16633,7 @@
             save();['m', 'd'].forEach(v => { renderOrders(v); renderStats(v); }); showToast('تم الاستيراد بنجاح ✅'); updateQuickStats();
           } catch { showToast('ملف غير صحيح'); }
         };
-        reader.readAsText(file);
+        reader.readAsText(file, 'UTF-8');
       };
       input.click();
     }
